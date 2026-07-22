@@ -39,7 +39,7 @@
             <p id="abn-error" role="alert" class="error">@_errorMessage</p>
         }
 
-        <button type="submit">Search</button>
+        <button type="submit" disabled="@_isLoading">@(_isLoading ? "Searching…" : "Search")</button>
     </form>
 
     @if (_recentSearches.Count > 0)
@@ -63,7 +63,18 @@
     }
 
     <div aria-live="polite" class="results">
-        @if (_state == LookupStatus.Found && _record is not null)
+        @if (_isLoading)
+        {
+            <p class="loading" aria-busy="true">Searching…</p>
+        }
+        else if (_state == LookupStatus.Idle)
+        {
+            <p class="empty-state">
+                Enter an ABN above and select <strong>Search</strong> to see business
+                details. For example, try 51 824 753 556.
+            </p>
+        }
+        else if (_state == LookupStatus.Found && _record is not null)
         {
             <article class="result-card" aria-label="Search result">
                 <div class="result-card__header">
@@ -91,9 +102,14 @@
                     <dt>GST registered</dt>
                     <dd>@(_record.GstRegistered ? "Yes" : "No")</dd>
                 </dl>
+                <div class="summary">
+                    <h4>Summary</h4>
+                    <p>@Summary.Generate(_record)</p>
+                    <p class="summary__note">Automatically generated from ABR sample data.</p>
+                </div>
             </article>
         }
-        @if (_state == LookupStatus.NotFound)
+        else if (_state == LookupStatus.NotFound)
         {
             <p>
                 No business found for ABN <strong>@_notFoundAbn</strong> in the sample

@@ -18,16 +18,24 @@ public partial class AbnLookup
     private BusinessRecord? _record;
     private readonly List<string> _recentSearches = new();
     private string _copyMessage = string.Empty;
+    private bool _isLoading;
 
     private bool HasError => _state == LookupStatus.Error;
 
     private void OnInput(ChangeEventArgs args) => _abnInput = args.Value?.ToString() ?? string.Empty;
 
-    private void HandleSubmit()
+    private async Task HandleSubmit()
     {
         _copyMessage = string.Empty;
+        _isLoading = true;
+
+        // Brief, deliberate delay so the accessible loading state is perceivable.
+        // Lookups are in-memory and otherwise instant.
+        await Task.Delay(300);
 
         var result = Lookup.SearchAbn(_abnInput);
+        _isLoading = false;
+
         if (result.Status == LookupStatus.Error)
         {
             _state = LookupStatus.Error;
@@ -77,11 +85,17 @@ public partial class AbnLookup
         }
     }
 
-    private void HandleRecentSearch(string normalisedAbn)
+    private async Task HandleRecentSearch(string normalisedAbn)
     {
         _copyMessage = string.Empty;
         _abnInput = Abn.Format(normalisedAbn);
+        _isLoading = true;
+
+        await Task.Delay(300);
+
         var record = Lookup.LookupAbn(normalisedAbn);
+        _isLoading = false;
+
         if (record is null)
         {
             _state = LookupStatus.NotFound;

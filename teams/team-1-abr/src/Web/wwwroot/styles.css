@@ -155,6 +155,38 @@ button {
 
 .results {
   margin-top: 1.5rem;
+  min-height: 3rem; /* reserve space so loading/empty/result swaps don't shift layout */
+}
+
+.empty-state {
+  margin: 0;
+  color: #444; /* ≥4.5:1 on white */
+}
+
+.loading {
+  margin: 0;
+  font-weight: 600;
+}
+
+.summary {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.summary h4 {
+  margin: 0 0 0.35rem;
+}
+
+.summary p {
+  margin: 0;
+}
+
+.summary .summary__note {
+  margin-top: 0.35rem;
+  color: #444;
+  font-size: 0.9rem;
+  font-style: italic;
 }
 
 .result-card {
@@ -201,6 +233,58 @@ dd {
 footer {
   color: #444;
   font-size: 0.9rem;
+}
+
+.browse {
+  margin-top: 2rem;
+  border-top: 2px solid var(--border);
+  padding-top: 1rem;
+}
+
+select#state-filter {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  font-size: 1rem;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--fg);
+}
+
+.browse__count {
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+}
+
+.browse__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.browse__item {
+  display: grid;
+  gap: 0.15rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.75rem 0.9rem;
+  background: #f7f9fb;
+}
+
+.browse__name {
+  font-weight: 600;
+}
+
+.browse__meta {
+  color: #444; /* ≥4.5:1 on the light panel */
+  font-size: 0.95rem;
+}
+
+.browse__item .status {
+  justify-self: start;
+  margin-top: 0.25rem;
 }
 
 /* Blazor WebAssembly runtime error banner (hidden until an unhandled error). */
