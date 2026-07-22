@@ -16,7 +16,6 @@ features** with GitHub Copilot. Two teams build small, accessible, secure web ap
 
 - **Team 1 (`teams/team-1-abr/`)** — an accessible ABN lookup/results experience, plus
   accessibility analysis of the Australian Business Register.
-- **Team 2 (`teams/team-2-grant-finder/`)** — an accessible grants / eligibility checker.
 
 Audience includes non-developers. **Favour clarity over cleverness.** Explain non-obvious
 choices in short comments.
@@ -54,7 +53,7 @@ choices in short comments.
 - When you generate tests, **also generate at least one failing/edge case** — don't only test
   the obvious success path.
 - E2E tests must use the provided **fixtures** in `fixtures/`. **Never** call
-  `abr.business.gov.au`, `business.gov.au`, or any live site from a test.
+  `abr.business.gov.au` or any live site from a test.
 - Name tests by behaviour: `it('rejects an ABN with an invalid checksum', ...)`.
 
 ## 4. Security rules
@@ -115,5 +114,4 @@ and a keyboard walkthrough.
 
 > During Objective C1, add a short section here describing YOUR feature's domain rules. Example
 > for Team 1: *"An ABN is 11 digits; validate using the ATO weighting algorithm; never call the
-> live ABR — use `fixtures/abn-sample-data.json`."* Example for Team 2: *"Eligibility rules live in
-> `src/Core/Eligibility.cs`; a grant match must explain why it matched."*
+> live ABR — use `fixtures/abn-sample-data.json`.
