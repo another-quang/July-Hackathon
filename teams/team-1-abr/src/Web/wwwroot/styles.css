@@ -157,6 +157,20 @@ button {
   margin-top: 1.5rem;
 }
 
+/* Reserve result area height so state changes don't shift layout jarringly. */
+.results--stable {
+  min-height: 16rem;
+}
+
+.results-message,
+.results-status {
+  margin: 0;
+}
+
+.results-status {
+  font-weight: 600;
+}
+
 .result-card {
   border: 1px solid var(--border);
   border-radius: 6px;

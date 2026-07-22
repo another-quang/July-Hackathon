@@ -9,6 +9,8 @@
     - Results are placed in an aria-live region so screen readers hear the update (4.1.3).
     - Real <form> and <button> elements → full keyboard support (2.1.1).
     - aria-invalid is toggled on the field when there's an error (4.1.2).
+    - First-load instructions are visible before any search (Story 8).
+    - Loading and empty states are announced using role="status" (Story 8).
 
     Residual risks to verify with the Playwright accessibility checks + a keyboard walkthrough:
     colour contrast of the theme, and focus-visible styling (see wwwroot/styles.css).
@@ -62,8 +64,18 @@
         </section>
     }
 
-    <div aria-live="polite" class="results">
-        @if (_state == LookupStatus.Found && _record is not null)
+    <div aria-live="polite" aria-atomic="true" class="results results--stable">
+        @if (!_hasSearched)
+        {
+            <p class="results-message">
+                Enter an 11-digit ABN, then select <strong>Search</strong> to view business details from the sample data.
+            </p>
+        }
+        else if (_isLoading)
+        {
+            <p role="status" class="results-status">Searching sample data…</p>
+        }
+        else if (_state == LookupStatus.Found && _record is not null)
         {
             <article class="result-card" aria-label="Search result">
                 <div class="result-card__header">
@@ -93,11 +105,10 @@
                 </dl>
             </article>
         }
-        @if (_state == LookupStatus.NotFound)
+        else if (_state == LookupStatus.NotFound)
         {
-            <p>
-                No business found for ABN <strong>@_notFoundAbn</strong> in the sample
-                data.
+            <p role="status" class="results-status">
+                No business found for ABN <strong>@_notFoundAbn</strong> in the sample data.
             </p>
         }
     </div>
