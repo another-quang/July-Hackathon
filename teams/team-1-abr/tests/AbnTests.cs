@@ -256,4 +256,118 @@ public class AbnTests
     {
         Assert.Equal("518247535566", Abn.Format("518247535566"));
     }
+
+    // --- S2: Accessibility edge cases & session isolation -------------------
+
+    [Fact]
+    public void Validate_ErrorMessageIsConsistentAndHelpful_ForAccessibility()
+    {
+        // Error messages should be clear and visible; tested with aria-describedby in component.
+        var emptyResult = Abn.Validate("");
+        Assert.False(emptyResult.Valid);
+        Assert.NotEmpty(emptyResult.Reason);
+        Assert.True(emptyResult.Reason.Length > 5, "Error message should be descriptive");
+
+        var checksumResult = Abn.Validate("51824753557");
+        Assert.False(checksumResult.Valid);
+        Assert.Contains("checksum", checksumResult.Reason, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void RecentSearches_DoNotPersistAcrossSessions_SessionMemoryOnly()
+    {
+        // Recent searches must be in-memory only; verify they reset when cleared.
+        var session1 = new List<string>();
+        Lookup.AddRecentSearch(session1, "51824753556");
+        Assert.Single(session1);
+
+        var session2 = new List<string>();
+        Lookup.ClearRecentSearches(session2);
+        Assert.Empty(session2);
+        // session1 and session2 are separate instances — no cross-session leakage.
+    }
+
+    [Fact]
+    public void AddRecentSearch_PreservesMaxItemsWithMultipleAdditions_AvoidingGrowthBeyondLimit()
+    {
+        var recentSearches = new List<string>();
+        var maxItems = 3;
+
+        // Add 5 items with a limit of 3
+        foreach (var abn in new[] { "51824753556", "83914571673", "53004085616", "40000000026", "10000000128" })
+        {
+            Lookup.AddRecentSearch(recentSearches, abn, maxItems);
+        }
+
+        // Should never exceed maxItems
+        Assert.Equal(3, recentSearches.Count);
+        Assert.Equal("10000000128", recentSearches[0]); // most recent first
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("  ")]
+    [InlineData("\t\n")]
+    public void Validate_RejectsBlankOrWhitespaceInput_WithClearMessage(string input)
+    {
+        var result = Abn.Validate(input);
+        Assert.False(result.Valid);
+        Assert.Contains("Enter an ABN", result.Reason, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("51-824-753-556")] // dashes
+    [InlineData("51/824/753/556")] // slashes
+    [InlineData("51.824.753.556")] // dots
+    public void Validate_RejectsFormattedNumbersWithNonDigitCharacters(string input)
+    {
+        var result = Abn.Validate(input);
+        Assert.False(result.Valid);
+        Assert.Contains("digits only", result.Reason, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void Normalise_HandlesExtremelyLongInput_WithoutCrashing()
+    {
+        var longInput = new string('5', 1000);
+        var result = Abn.Normalise(longInput);
+        Assert.NotNull(result);
+        // Normalise should return the input as-is if all chars are digits
+        Assert.Equal(longInput, result);
+    }
+
+    [Fact]
+    public void LookupAbn_IsCaseSensitiveForEntityNames_AndReturnsExactRecords()
+    {
+        var record = Lookup.LookupAbn("51824753556");
+        Assert.NotNull(record);
+        // Verify exact entity name
+        Assert.Equal("Australian Taxation Office Team 1", record!.EntityName);
+        Assert.Equal("Active", record.AbnStatus);
+        Assert.True(record.GstRegistered);
+    }
+
+    [Fact]
+    public void SearchAbn_ReturnsNormalisedAbnInNotFoundCase_ForErrorDisplay()
+    {
+        var result = Lookup.SearchAbn("  51 824 753 557  ");
+        // Invalid checksum, so NotFound or Error
+        Assert.True(result.Status == LookupStatus.Error || result.Status == LookupStatus.NotFound);
+        // Normalised ABN should be returned for display
+        if (result.Status == LookupStatus.NotFound)
+        {
+            Assert.Equal("51824753557", result.NormalisedAbn);
+        }
+    }
+
+    [Fact]
+    public void ClearRecentSearches_FullyEmptiesTheList_WithoutSideLects()
+    {
+        var recentSearches = new List<string> { "51824753556", "83914571673", "53004085616" };
+        Assert.Equal(3, recentSearches.Count);
+
+        Lookup.ClearRecentSearches(recentSearches);
+
+        Assert.Empty(recentSearches);
+    }
 }

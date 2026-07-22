@@ -426,4 +426,15 @@ FodyWeavers.xsd
 *.msi
 *.msix
 *.msm
-*.msp
+*.msp# Local database files and runtime data
+App_Data/
+*.db
+*.db-shm
+*.db-wal
+
+# Cursor IDE — NEVER commit these
+.cursor/
+.cursorignore
+.cursorhistory
+.cursorrules
+*.cursorignore
