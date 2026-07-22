@@ -1,0 +1,23 @@
+{
+  "name": "legacy-snippet",
+  "version": "1.0.0",
+  "description": "Legacy ABR report modernisation sample (S5)",
+  "main": "legacy-abn-report.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node legacy-abn-report.js"
+  },
+  "keywords": [
+    "ABR",
+    "legacy",
+    "modernisation"
+  ],
+  "author": "GitHub Copilot Hackathon",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.4.11",
+    "typescript": "^5.6.3"
+  }
+}
