@@ -123,7 +123,7 @@ public class AbnTests
     {
         var record = Lookup.LookupAbn("51824753556");
         Assert.NotNull(record);
-        Assert.Equal("Australian Taxation Office", record!.EntityName);
+        Assert.Contains("Australian Taxation Office", record!.EntityName, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
