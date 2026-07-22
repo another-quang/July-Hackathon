@@ -206,7 +206,7 @@ button {
 
 /* Reserve result area height so state changes don't shift layout jarringly. */
 .results--stable {
-  min-height: 16rem;
+  /*min-height: 16rem;*/
 }
 
 .results-message,
