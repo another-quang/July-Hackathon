@@ -1,0 +1,58 @@
+@*
+    Accessible browse + filter for the sample dataset (Story 7).
+    - Visible <label> bound to a native <select> → keyboard operable (2.1.1, 3.3.2).
+    - Status shown as text, not colour alone (1.4.1), matching the result card.
+    - The result count is announced via an aria-live region (4.1.3).
+*@
+
+<section aria-labelledby="browse-heading" class="browse">
+    <h2 id="browse-heading">Browse businesses</h2>
+
+    <div class="field">
+        <label for="state-filter">Filter by state or territory</label>
+        <select id="state-filter" @bind="_selectedState" @bind:after="OnFilterChanged">
+            <option value="All">All states and territories</option>
+            @foreach (var state in _states)
+            {
+                <option value="@state">@state</option>
+            }
+        </select>
+    </div>
+
+    <p aria-live="polite" class="browse__count">@CountMessage</p>
+
+    <ul class="browse__list">
+        @foreach (var record in _filtered)
+        {
+            <li class="browse__item">
+                <span class="browse__name">@record.EntityName</span>
+                <span class="browse__meta">@record.EntityType — @record.State @record.Postcode</span>
+                <span class="@(record.AbnStatus == "Active" ? "status status--active" : "status status--cancelled")">
+                    @record.AbnStatus
+                </span>
+            </li>
+        }
+    </ul>
+</section>
+
+@code {
+    private readonly IReadOnlyList<string> _states = Lookup.DistinctStates();
+    private string _selectedState = "All";
+    private IReadOnlyList<BusinessRecord> _filtered = Lookup.AllRecords();
+
+    private string CountMessage
+    {
+        get
+        {
+            var noun = _filtered.Count == 1 ? "business" : "businesses";
+            return _selectedState == "All"
+                ? $"Showing {_filtered.Count} {noun}."
+                : $"Showing {_filtered.Count} {noun} in {_selectedState}.";
+        }
+    }
+
+    private void OnFilterChanged()
+    {
+        _filtered = Lookup.FilterByState(_selectedState);
+    }
+}

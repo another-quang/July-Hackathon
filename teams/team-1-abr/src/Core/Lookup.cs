@@ -38,6 +38,34 @@ public static class Lookup
     public static BusinessRecord? LookupAbn(string normalisedAbn) =>
         Records.FirstOrDefault(record => record.Abn == normalisedAbn);
 
+    /// <summary>All business records from the local sample data.</summary>
+    public static IReadOnlyList<BusinessRecord> AllRecords() => Records;
+
+    /// <summary>
+    /// Records whose state matches <paramref name="state"/>. A null/empty value or
+    /// "All" (case-insensitive) returns every record. Matching is case-insensitive.
+    /// </summary>
+    public static IReadOnlyList<BusinessRecord> FilterByState(string? state)
+    {
+        if (string.IsNullOrWhiteSpace(state) ||
+            string.Equals(state, "All", StringComparison.OrdinalIgnoreCase))
+        {
+            return Records;
+        }
+
+        return Records
+            .Where(record => string.Equals(record.State, state, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    /// <summary>The sorted, unique set of states present in the sample data.</summary>
+    public static IReadOnlyList<string> DistinctStates() =>
+        Records
+            .Select(record => record.State)
+            .Distinct()
+            .OrderBy(state => state, StringComparer.Ordinal)
+            .ToList();
+
     /// <summary>
     /// Validate a user-entered ABN and look up the matching record from the local sample data.
     /// </summary>

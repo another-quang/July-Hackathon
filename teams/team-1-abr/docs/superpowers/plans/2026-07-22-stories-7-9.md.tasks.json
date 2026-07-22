@@ -1,0 +1,32 @@
+{
+  "planPath": "teams/team-1-abr/docs/superpowers/plans/2026-07-22-stories-7-9.md",
+  "tasks": [
+    {
+      "id": 0,
+      "subject": "Task 1: Offline summary generator (story 9)",
+      "status": "pending",
+      "description": "**Goal:** A pure `Summary.Generate(BusinessRecord)` that returns a short, deterministic, plain-language summary, with distinct phrasing for Active vs Cancelled and GST status.\n\n**Files:**\n- Create: `src/Core/Summary.cs`\n- Test: `tests/SummaryTests.cs`\n\n**Acceptance Criteria:**\n- Active record → text contains \"currently active\" and \"registered for GST\".\n- Cancelled record → text contains \"cancelled\", \"may no longer be trading\", and \"not registered for GST\".\n- Every fixture record → non-empty text containing the entity name.\n\n**Verify:** `dotnet test --filter \"FullyQualifiedName~SummaryTests\"` → all pass.\n\n```json:metadata\n{\"files\": [\"teams/team-1-abr/src/Core/Summary.cs\", \"teams/team-1-abr/tests/SummaryTests.cs\"], \"verifyCommand\": \"dotnet test --filter \\\"FullyQualifiedName~SummaryTests\\\"\", \"acceptanceCriteria\": [\"Active record text contains 'currently active' and 'registered for GST'\", \"Cancelled record text contains 'cancelled', 'may no longer be trading', 'not registered for GST'\", \"Every fixture record produces non-empty text containing the entity name\"], \"modelTier\": \"standard\"}\n```"
+    },
+    {
+      "id": 1,
+      "subject": "Task 2: Browse/filter query methods (story 7)",
+      "status": "pending",
+      "description": "**Goal:** Add `AllRecords`, `FilterByState`, and `DistinctStates` to `Lookup` so the UI can browse and filter the sample dataset by state.\n\n**Files:**\n- Modify: `src/Core/Lookup.cs`\n- Test: `tests/LookupBrowseTests.cs`\n\n**Acceptance Criteria:**\n- `FilterByState(\"VIC\")` returns only VIC records; `FilterByState(null)`, `\"\"`, and `\"All\"` return all records.\n- `FilterByState` matches state case-insensitively (`\"vic\"` matches `\"VIC\"`).\n- `DistinctStates()` returns the sorted unique set `[\"ACT\", \"NSW\", \"QLD\", \"VIC\"]`.\n\n**Verify:** `dotnet test --filter \"FullyQualifiedName~LookupBrowseTests\"` → all pass.\n\n```json:metadata\n{\"files\": [\"teams/team-1-abr/src/Core/Lookup.cs\", \"teams/team-1-abr/tests/LookupBrowseTests.cs\"], \"verifyCommand\": \"dotnet test --filter \\\"FullyQualifiedName~LookupBrowseTests\\\"\", \"acceptanceCriteria\": [\"FilterByState('VIC') returns only VIC records; null/''/'All' return all\", \"FilterByState is case-insensitive\", \"DistinctStates() returns sorted unique [ACT, NSW, QLD, VIC]\"], \"modelTier\": \"standard\"}\n```"
+    },
+    {
+      "id": 2,
+      "subject": "Task 3: Summary + empty + loading UI (stories 8-9)",
+      "status": "pending",
+      "blockedBy": [0],
+      "description": "**Goal:** Show the generated summary in the result card, show pre-search instructions when idle, and show an accessible loading indicator during a brief simulated delay without shifting layout.\n\n**Files:**\n- Modify: `src/Web/Lookup.cs` (AbnLookup code-behind)\n- Modify: `src/Web/Components/AbnLookup.razor`\n- Modify: `src/Web/wwwroot/styles.css`\n\n**Acceptance Criteria:**\n- Before any search, the results region shows brief guidance including the example ABN.\n- Submitting shows a \"Searching…\" indicator (with `aria-busy=\"true\"`) and disables the Search button while loading.\n- A found result shows a \"Summary\" block with the generated text and an \"Automatically generated…\" note, inside the existing `aria-live` region.\n- The app builds and existing tests still pass.\n\n**Verify:** `dotnet build` → succeeds; `dotnet test` → all pass. Manual: run the Web project, search `51824753556`, observe brief \"Searching…\" then result with summary; reload and observe idle instructions.\n\n```json:metadata\n{\"files\": [\"teams/team-1-abr/src/Web/Lookup.cs\", \"teams/team-1-abr/src/Web/Components/AbnLookup.razor\", \"teams/team-1-abr/src/Web/wwwroot/styles.css\"], \"verifyCommand\": \"dotnet build teams/team-1-abr/team-1-abr.sln && dotnet test\", \"acceptanceCriteria\": [\"Idle results region shows guidance including example ABN\", \"Submitting shows aria-busy loading indicator and disables Search\", \"Found result shows Summary block with generated text and note inside aria-live region\", \"Build and existing tests pass\"], \"modelTier\": \"standard\"}\n```"
+    },
+    {
+      "id": 3,
+      "subject": "Task 4: Accessible browse & state filter (story 7)",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** Add a `BusinessBrowser` component that lists all sample businesses with an accessible state dropdown filter and an announced result count, and compose it into the page.\n\n**Files:**\n- Create: `src/Web/Components/BusinessBrowser.razor`\n- Modify: `src/Web/App.razor`\n- Modify: `src/Web/wwwroot/styles.css`\n\n**Acceptance Criteria:**\n- The page shows a \"Browse businesses\" section listing all four records.\n- Choosing a state from the labelled dropdown narrows the list to matching records.\n- The result count is announced via an `aria-live` region and status is shown as text (not colour alone).\n- The app builds and all tests still pass.\n\n**Verify:** `dotnet build` → succeeds. Manual: run the Web project, tab to the state dropdown, choose \"VIC\", confirm the list narrows to the VIC record and the count text updates.\n\n```json:metadata\n{\"files\": [\"teams/team-1-abr/src/Web/Components/BusinessBrowser.razor\", \"teams/team-1-abr/src/Web/App.razor\", \"teams/team-1-abr/src/Web/wwwroot/styles.css\"], \"verifyCommand\": \"dotnet build teams/team-1-abr/team-1-abr.sln && dotnet test\", \"acceptanceCriteria\": [\"Browse businesses section lists all four records\", \"Choosing a state narrows the list via the labelled dropdown\", \"Result count announced via aria-live; status shown as text not colour alone\", \"Build and all tests pass\"], \"modelTier\": \"standard\"}\n```"
+    }
+  ],
+  "lastUpdated": "2026-07-22T00:00:00Z"
+}

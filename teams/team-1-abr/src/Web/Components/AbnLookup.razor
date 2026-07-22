@@ -29,6 +29,7 @@
                    name="abn"
                    type="text"
                    inputmode="numeric"
+                   placeholder="e.g. 12 345 678 901"
                    autocomplete="off"
                    value="@_abnInput"
                    @oninput="OnInput"
@@ -41,28 +42,8 @@
             <p id="abn-error" role="alert" class="error">@_errorMessage</p>
         }
 
-        <button type="submit">Search</button>
+        <button type="submit" disabled="@_isLoading">@(_isLoading ? "Searching…" : "Search")</button>
     </form>
-
-    @if (_recentSearches.Count > 0)
-    {
-        <section aria-labelledby="recent-searches-heading" class="recent-searches">
-            <div class="recent-searches__header">
-                <h3 id="recent-searches-heading">Recent searches</h3>
-                <button type="button" @onclick="ClearRecentSearches">Clear</button>
-            </div>
-            <ul>
-                @foreach (var recentSearch in _recentSearches)
-                {
-                    <li>
-                        <button type="button" @onclick="() => HandleRecentSearch(recentSearch)">
-                            @Abn.Format(recentSearch)
-                        </button>
-                    </li>
-                }
-            </ul>
-        </section>
-    }
 
     <div aria-live="polite" aria-atomic="true" class="results results--stable">
         @if (!_hasSearched)
@@ -80,7 +61,7 @@
             <article class="result-card" aria-label="Search result">
                 <div class="result-card__header">
                     <h3>@_record.EntityName</h3>
-                    <button type="button" @onclick="CopyAbnToClipboardAsync">Copy ABN</button>
+                    <button type="button" class="copy-button" @onclick="CopyAbnToClipboardAsync" aria-label="Copy ABN to clipboard">Copy ABN</button>
                 </div>
                 @if (!string.IsNullOrWhiteSpace(_copyMessage))
                 {
@@ -103,6 +84,11 @@
                     <dt>GST registered</dt>
                     <dd>@(_record.GstRegistered ? "Yes" : "No")</dd>
                 </dl>
+                <div class="summary">
+                    <h4>Summary</h4>
+                    <p>@Summary.Generate(_record)</p>
+                    <p class="summary__note">Automatically generated from ABR sample data.</p>
+                </div>
             </article>
         }
         else if (_state == LookupStatus.NotFound)
@@ -112,4 +98,27 @@
             </p>
         }
     </div>
+
+    @if (_recentSearches.Count > 0)
+    {
+        <section aria-labelledby="recent-searches-heading" class="recent-searches">
+            <div class="recent-searches__header">
+                <h3 id="recent-searches-heading">Recent searches</h3>
+                <button type="button" @onclick="ClearRecentSearches">Clear</button>
+            </div>
+            <ul class="recent-searches__list">
+                @foreach (var recentSearch in _recentSearches)
+                {
+                    <li>
+                        <button type="button"
+                                class="recent-searches__item"
+                                @onclick="() => HandleRecentSearch(recentSearch)"
+                                aria-label="@GetRecentSearchAriaLabel(recentSearch)">
+                            @Abn.Format(recentSearch)
+                        </button>
+                    </li>
+                }
+            </ul>
+        </section>
+    }
 </section>

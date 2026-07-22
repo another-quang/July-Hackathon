@@ -78,6 +78,14 @@ public class AbnTests
     }
 
     [Fact]
+    public void Validate_RejectsPunctuationInAnAbnAsNonDigitInput()
+    {
+        var result = Abn.Validate("51-824-753-556");
+        Assert.False(result.Valid);
+        Assert.Contains("digits only", result.Reason, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void Validate_RejectsAn11DigitNumberThatFailsTheChecksum()
     {
         // Valid ABN with its last digit changed → checksum should fail.
