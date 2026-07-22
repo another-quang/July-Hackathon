@@ -37,6 +37,27 @@ header {
   color: var(--brand-fg);
 }
 
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.header-branding {
+  flex-shrink: 0;
+}
+
+.government-logo {
+  width: 3.5rem;
+  height: 3.5rem;
+  display: block;
+  border-radius: 0.7rem;
+  object-fit: cover;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+
 header h1 {
   margin: 0 0 0.25rem;
 }
