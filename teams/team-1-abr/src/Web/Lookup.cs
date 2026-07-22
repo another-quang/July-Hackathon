@@ -25,13 +25,15 @@ public partial class AbnLookup
 
     private void HandleSubmit()
     {
-        _copyMessage = string.Empty;
+        ResetMessages();
 
         var result = Lookup.SearchAbn(_abnInput);
         if (result.Status == LookupStatus.Error)
         {
             _state = LookupStatus.Error;
             _errorMessage = result.Reason;
+            _record = null;
+            _notFoundAbn = string.Empty;
             return;
         }
 
@@ -47,6 +49,7 @@ public partial class AbnLookup
 
         _record = result.Record;
         _state = LookupStatus.Found;
+        _notFoundAbn = string.Empty;
     }
 
     private void AddRecentSearch(string normalisedAbn)
@@ -57,6 +60,12 @@ public partial class AbnLookup
     private void ClearRecentSearches()
     {
         Lookup.ClearRecentSearches(_recentSearches);
+        _copyMessage = string.Empty;
+        _errorMessage = string.Empty;
+        _notFoundAbn = string.Empty;
+        _record = null;
+        _state = LookupStatus.Idle;
+        _abnInput = string.Empty;
     }
 
     private async Task CopyAbnToClipboardAsync()
@@ -77,9 +86,18 @@ public partial class AbnLookup
         }
     }
 
-    private void HandleRecentSearch(string normalisedAbn)
+    private void ResetMessages()
     {
         _copyMessage = string.Empty;
+        _errorMessage = string.Empty;
+    }
+
+    private string GetRecentSearchAriaLabel(string normalisedAbn) =>
+        $"Search for ABN {Abn.Format(normalisedAbn)}";
+
+    private void HandleRecentSearch(string normalisedAbn)
+    {
+        ResetMessages();
         _abnInput = Abn.Format(normalisedAbn);
         var record = Lookup.LookupAbn(normalisedAbn);
         if (record is null)
@@ -92,5 +110,6 @@ public partial class AbnLookup
 
         _record = record;
         _state = LookupStatus.Found;
+        _notFoundAbn = string.Empty;
     }
 }

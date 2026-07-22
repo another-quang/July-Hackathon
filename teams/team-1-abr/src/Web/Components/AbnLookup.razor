@@ -42,33 +42,13 @@
         <button type="submit">Search</button>
     </form>
 
-    @if (_recentSearches.Count > 0)
-    {
-        <section aria-labelledby="recent-searches-heading" class="recent-searches">
-            <div class="recent-searches__header">
-                <h3 id="recent-searches-heading">Recent searches</h3>
-                <button type="button" @onclick="ClearRecentSearches">Clear</button>
-            </div>
-            <ul>
-                @foreach (var recentSearch in _recentSearches)
-                {
-                    <li>
-                        <button type="button" @onclick="() => HandleRecentSearch(recentSearch)">
-                            @Abn.Format(recentSearch)
-                        </button>
-                    </li>
-                }
-            </ul>
-        </section>
-    }
-
     <div aria-live="polite" class="results">
         @if (_state == LookupStatus.Found && _record is not null)
         {
             <article class="result-card" aria-label="Search result">
                 <div class="result-card__header">
                     <h3>@_record.EntityName</h3>
-                    <button type="button" @onclick="CopyAbnToClipboardAsync">Copy ABN</button>
+                    <button type="button" class="copy-button" @onclick="CopyAbnToClipboardAsync" aria-label="Copy ABN to clipboard">Copy ABN</button>
                 </div>
                 @if (!string.IsNullOrWhiteSpace(_copyMessage))
                 {
@@ -101,4 +81,27 @@
             </p>
         }
     </div>
+
+    @if (_recentSearches.Count > 0)
+    {
+        <section aria-labelledby="recent-searches-heading" class="recent-searches">
+            <div class="recent-searches__header">
+                <h3 id="recent-searches-heading">Recent searches</h3>
+                <button type="button" @onclick="ClearRecentSearches">Clear</button>
+            </div>
+            <ul class="recent-searches__list">
+                @foreach (var recentSearch in _recentSearches)
+                {
+                    <li>
+                        <button type="button"
+                                class="recent-searches__item"
+                                @onclick="() => HandleRecentSearch(recentSearch)"
+                                aria-label="@GetRecentSearchAriaLabel(recentSearch)">
+                            @Abn.Format(recentSearch)
+                        </button>
+                    </li>
+                }
+            </ul>
+        </section>
+    }
 </section>
