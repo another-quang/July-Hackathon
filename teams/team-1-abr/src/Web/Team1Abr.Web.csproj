@@ -6,6 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Team1Abr.Web</RootNamespace>
     <AssemblyName>Team1Abr.Web</AssemblyName>
+
+    <!-- Mobile performance: drop the ICU globalization data (~1.4 MB, ~340 KB
+         compressed) from the WASM download. Safe here because all string
+         comparisons are Ordinal/OrdinalIgnoreCase and there is no culture-
+         sensitive number/date formatting. Biggest single first-load win on a
+         mobile connection. -->
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>

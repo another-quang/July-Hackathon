@@ -24,6 +24,11 @@ body {
   color: var(--fg);
   background: var(--bg);
   line-height: 1.5;
+  /* Stop iOS from auto-inflating text (which reflows the layout) and keep long
+     values (ABNs, entity names) from forcing horizontal scroll on phones. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-wrap: break-word;
 }
 
 .container {
@@ -321,6 +326,35 @@ select#state-filter {
 .browse__item .status {
   justify-self: start;
   margin-top: 0.25rem;
+}
+
+/* Small screens: trim spacing and stack the details list so it stays readable
+   and doesn't cramp into two tight columns on narrow phones. */
+@media (max-width: 30rem) {
+  .container {
+    padding: 0.75rem 1rem;
+  }
+
+  dl {
+    grid-template-columns: 1fr;
+    gap: 0 0;
+  }
+
+  dt {
+    margin-top: 0.5rem;
+  }
+
+  .recent-searches__header {
+    flex-wrap: wrap;
+  }
+}
+
+/* Respect users who prefer reduced motion (and skip needless transitions). */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Blazor WebAssembly runtime error banner (hidden until an unhandled error). */
