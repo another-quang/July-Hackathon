@@ -139,6 +139,11 @@ button {
   border-radius: 4px;
   padding: 0.75rem 0.9rem;
   color: var(--fg);
+  font: inherit;
+}
+
+.recent-searches__item:hover {
+  background: #f3f7fb;
 }
 
 /* Visible focus indicator for keyboard users. */
