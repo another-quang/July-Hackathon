@@ -36,6 +36,38 @@ test.describe('ABN lookup', () => {
     await expect(page.getByRole('alert')).toContainText(/11 digits/i);
   });
 
+  test('shows a not-found message for an ABN that is valid but absent from fixtures', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await page.getByLabel(/australian business number/i).waitFor();
+
+    await page.getByLabel(/australian business number/i).fill('10000000000');
+    await page.getByRole('button', { name: /search/i }).click();
+
+    await expect(page.getByText(/no business found/i)).toBeVisible();
+    await expect(page.getByRole('strong')).toContainText(/10 000 000 000/i);
+  });
+
+  test('supports keyboard-only navigation from the field to submission', async ({ page }) => {
+    await page.goto('/');
+
+    const field = page.getByLabel(/australian business number/i);
+    await field.waitFor();
+    await expect(field).toBeVisible();
+    await expect(page.getByRole('button', { name: /search/i })).toBeVisible();
+
+    await page.keyboard.press('Tab');
+    await expect(field).toBeFocused();
+
+    await page.keyboard.type('51824753556');
+    await page.keyboard.press('Enter');
+
+    await expect(
+      page.getByRole('heading', { name: /australian taxation office/i }),
+    ).toBeVisible();
+  });
+
   test('form controls are accessible and keyboard-operable (S2)', async ({
     page,
   }) => {
@@ -43,6 +75,7 @@ test.describe('ABN lookup', () => {
 
     // The input is reached by its visible <label> (not placeholder-only).
     const field = page.getByLabel(/australian business number/i);
+    await field.waitFor();
     await expect(field).toBeVisible();
 
     // A real <button> exposes an accessible name via its role.
@@ -58,7 +91,4 @@ test.describe('ABN lookup', () => {
       page.getByRole('heading', { name: /australian taxation office/i }),
     ).toBeVisible();
   });
-
-  // TODO (C5): with Copilot, add a regression test for the "not found" path and
-  // a keyboard-only navigation check (Tab to the field, type, Enter to submit).
 });
