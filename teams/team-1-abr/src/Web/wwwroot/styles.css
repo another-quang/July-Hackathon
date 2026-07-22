@@ -285,6 +285,11 @@ select#state-filter {
   font-weight: 600;
 }
 
+.browse__abn {
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+}
+
 .browse__meta {
   color: #444; /* ≥4.5:1 on the light panel */
   font-size: 0.95rem;

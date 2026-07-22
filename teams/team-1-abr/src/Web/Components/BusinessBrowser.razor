@@ -26,6 +26,7 @@
         {
             <li class="browse__item">
                 <span class="browse__name">@record.EntityName</span>
+                <span class="browse__abn">ABN @Abn.Format(record.Abn)</span>
                 <span class="browse__meta">@record.EntityType — @record.State @record.Postcode</span>
                 <span class="@(record.AbnStatus == "Active" ? "status status--active" : "status status--cancelled")">
                     @record.AbnStatus
