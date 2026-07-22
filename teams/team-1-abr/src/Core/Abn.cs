@@ -95,6 +95,7 @@ public static class Abn
             : $"{normalised[..2]} {normalised[2..5]} {normalised[5..8]} {normalised[8..11]}";
 }
 
+
 /// <summary>Result of validating an ABN.</summary>
 /// <param name="Valid">Whether the ABN passed validation.</param>
 /// <param name="Reason">A short, user-safe reason when invalid. Empty string when valid.</param>

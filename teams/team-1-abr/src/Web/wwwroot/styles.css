@@ -85,6 +85,62 @@ button {
   cursor: pointer;
 }
 
+.copy-button {
+  margin-top: 1rem;
+  background: #1f6feb;
+  border-color: transparent;
+}
+
+.copy-confirmation {
+  margin: 0.75rem 0 0;
+  color: #1a5a82;
+  font-size: 0.95rem;
+}
+
+.link-button {
+  border: none;
+  background: transparent;
+  color: var(--brand);
+  padding: 0.35rem 0.45rem;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.recent-searches {
+  margin-top: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+  background: #f7f9fb;
+}
+
+.recent-searches__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.recent-searches__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.recent-searches__item {
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.75rem 0.9rem;
+  color: var(--fg);
+}
+
 /* Visible focus indicator for keyboard users. */
 :focus-visible {
   outline: 3px solid #ffbf47;

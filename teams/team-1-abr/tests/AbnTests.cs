@@ -21,6 +21,32 @@ public class AbnTests
     }
 
     [Fact]
+    public void AddRecentSearch_KeepsTheMostRecentFiveAndMovesDuplicatesToTheFront()
+    {
+        var recentSearches = new List<string>();
+
+        foreach (var abn in new[] { "51824753556", "51824753557", "51824753558", "51824753559", "51824753550", "51824753551" })
+        {
+            Lookup.AddRecentSearch(recentSearches, abn);
+        }
+
+        Assert.Equal(5, recentSearches.Count);
+        Assert.Equal("51824753551", recentSearches[0]);
+        Assert.DoesNotContain("51824753556", recentSearches);
+    }
+
+    [Fact]
+    public void ClearRecentSearches_RemovesAllEntries()
+    {
+        var recentSearches = new List<string>();
+        Lookup.AddRecentSearch(recentSearches, "51824753556");
+
+        Lookup.ClearRecentSearches(recentSearches);
+
+        Assert.Empty(recentSearches);
+    }
+
+    [Fact]
     public void Validate_AcceptsAValidAbnThatContainsSpaces()
     {
         var result = Abn.Validate("51 824 753 556");

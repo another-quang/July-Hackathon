@@ -42,6 +42,26 @@
         <button type="submit">Search</button>
     </form>
 
+    @if (_recentSearches.Count > 0)
+    {
+        <section aria-labelledby="recent-searches-heading" class="recent-searches">
+            <div class="recent-searches__header">
+                <h3 id="recent-searches-heading">Recent searches</h3>
+                <button type="button" @onclick="ClearRecentSearches">Clear</button>
+            </div>
+            <ul>
+                @foreach (var recentSearch in _recentSearches)
+                {
+                    <li>
+                        <button type="button" @onclick="() => HandleRecentSearch(recentSearch)">
+                            @Abn.Format(recentSearch)
+                        </button>
+                    </li>
+                }
+            </ul>
+        </section>
+    }
+
     <div aria-live="polite" class="results">
         @if (_state == LookupStatus.Found && _record is not null)
         {
@@ -75,46 +95,3 @@
         }
     </div>
 </section>
-
-@code {
-    private enum LookupStatus
-    {
-        Idle,
-        Error,
-        NotFound,
-        Found,
-    }
-
-    private string _abnInput = string.Empty;
-    private LookupStatus _state = LookupStatus.Idle;
-    private string _errorMessage = string.Empty;
-    private string _notFoundAbn = string.Empty;
-    private BusinessRecord? _record;
-
-    private bool HasError => _state == LookupStatus.Error;
-
-    private void OnInput(ChangeEventArgs args) => _abnInput = args.Value?.ToString() ?? string.Empty;
-
-    private void HandleSubmit()
-    {
-        // Security: validate untrusted input at the boundary before using it.
-        var result = Abn.Validate(_abnInput);
-        if (!result.Valid)
-        {
-            _state = LookupStatus.Error;
-            _errorMessage = result.Reason;
-            return;
-        }
-
-        var record = Lookup.LookupAbn(result.Normalised);
-        if (record is null)
-        {
-            _state = LookupStatus.NotFound;
-            _notFoundAbn = Abn.Format(result.Normalised);
-            return;
-        }
-
-        _record = record;
-        _state = LookupStatus.Found;
-    }
-}
