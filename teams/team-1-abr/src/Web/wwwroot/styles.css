@@ -204,9 +204,11 @@ button {
   font-style: italic;
 }
 
-/* Reserve result area height so state changes don't shift layout jarringly. */
+/* Reserve a little result-area height so the empty → "Searching…" → result
+   state swaps don't shift the layout jarringly (WCAG-friendly). Kept small so
+   there's no big empty gap before the first search. */
 .results--stable {
-  /*min-height: 16rem;*/
+  min-height: 6rem;
 }
 
 .results-message,
