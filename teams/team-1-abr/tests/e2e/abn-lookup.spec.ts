@@ -105,4 +105,31 @@ test.describe("ABN lookup", () => {
       page.getByRole("heading", { name: /australian taxation office/i }),
     ).toBeVisible();
   });
+
+  test("exposes accessible status and focus cues for screen-reader and keyboard users", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    const field = page.getByLabel(/australian business number/i);
+    await field.waitFor();
+    await expect(field).toBeVisible();
+
+    await field.focus();
+    await expect(field).toBeFocused();
+
+    const outline = await field.evaluate((element) => {
+      const styles = window.getComputedStyle(element);
+      return styles.outlineStyle + " " + styles.outlineWidth + " " + styles.outlineColor;
+    });
+    expect(outline).not.toBe("none 0px rgba(0, 0, 0, 0)");
+
+    await field.fill("123");
+    await page.getByRole("button", { name: /search/i }).click();
+
+    const alert = page.getByRole("alert");
+    await expect(alert).toContainText(/11 digits/i);
+
+    await expect(page.locator('.results[aria-live="polite"]')).toBeVisible();
+  });
 });
