@@ -1,16 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-/**
- * Starter end-to-end + accessibility checks (Objectives C5 and stretch goal S2).
- *
- * Accessibility is verified with plain Playwright assertions (accessible names,
- * semantic roles, keyboard operability) plus Copilot-assisted review — no
- * third-party scanner.
- *
- * These run against the LOCAL app only (see playwright.config.ts). Do NOT change
- * them to hit abr.business.gov.au or any live government site.
- */
-
 test.describe('ABN lookup', () => {
   test('finds a business for a valid ABN in the sample data', async ({ page }) => {
     await page.goto('/');
